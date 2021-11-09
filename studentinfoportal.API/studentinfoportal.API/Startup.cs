@@ -29,7 +29,16 @@ namespace studentinfoportal.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddCors((option) =>
+            {
+                option.AddPolicy("angularApplication", (builder) =>
+                {
+                    builder.WithOrigins("http://localhost:4200/")
+                    .AllowAnyHeader()
+                    .WithMethods("GET", "POST", "PUT", "DELETE")
+                    .WithExposedHeaders("*");
+                });
+            });
             services.AddControllers();
             services.AddDbContext<StudentContext>(options => options.UseNpgsql(Configuration.GetConnectionString("StudnetPgDb")));
             services.AddScoped<IStudentRepository, StudentRepository>();
@@ -53,6 +62,13 @@ namespace studentinfoportal.API
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors(x => x
+                            .AllowAnyOrigin()
+                            .AllowAnyMethod()
+                            .AllowAnyHeader());
+
+            //app.UseCors("angularApplication");
 
             app.UseAuthorization();
 
