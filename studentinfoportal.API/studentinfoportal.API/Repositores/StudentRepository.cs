@@ -56,5 +56,24 @@ namespace studentinfoportal.API.Repositores
 
             return null;
         }
+
+        public async Task<Student> DeleteStudent(Guid studentId)
+        {
+            var student = await  GetStudentAsync(studentId);
+            if (student != null)
+            {
+                Context.Student.Remove(student);
+                await Context.SaveChangesAsync();
+                return student;
+            }
+            return null;
+        }
+
+        public async Task<Student> AddNewStudent(Student student)
+        {
+             var newStudent = await Context.Student.AddAsync(student);
+            await Context.SaveChangesAsync();
+            return newStudent.Entity;
+        }
     }
 }

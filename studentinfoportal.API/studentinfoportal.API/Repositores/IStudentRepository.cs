@@ -14,5 +14,10 @@ namespace studentinfoportal.API.Repositores
         public Task<bool> Exists(Guid studentId);
 
         public Task<Student> UpdateStudent(Guid studentId, Student studentRequest);
+
+        public Task<Student> DeleteStudent(Guid studentId);
+
+        public Task<Student> AddNewStudent(Student student);
+
     }
 }
