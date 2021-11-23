@@ -1,3 +1,4 @@
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -42,6 +43,7 @@ namespace studentinfoportal.API
                 });
             });
             services.AddControllers();
+            services.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>());
             services.AddDbContext<StudentContext>(options => options.UseNpgsql(Configuration.GetConnectionString("StudnetPgDb")));
             services.AddScoped<IStudentRepository, StudentRepository>();
             services.AddScoped<IImageUploadRepository, LocalImageUploadRepository>();

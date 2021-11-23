@@ -98,18 +98,33 @@ namespace studentinfoportal.API.Controllers
         [Route("[controller]/{studentId:guid}/upload-image")]
         public async Task<IActionResult> UploadImage([FromRoute] Guid studentId,IFormFile profileImage)
         {
-            if(await StudentRepository.Exists(studentId))
+            if (profileImage != null)
             {
-                // Save in local resource
-                var fileName = Guid.NewGuid() + Path.GetExtension(profileImage.FileName);
-                var fileImagePath = await imageUploadRepository.Upload(profileImage, fileName);
+                List<string> expectedExtension = new List<string> { ".jpg", ".png", ".jpeg" };
+                var extension = Path.GetExtension(profileImage.FileName);
 
-                // update in database
-                if(await StudentRepository.UpdateProfileImageURL(studentId, fileImagePath))
+                if (expectedExtension.Contains(extension.ToLower()))
                 {
-                    return Ok(fileImagePath);
+
+                    if (await StudentRepository.Exists(studentId))
+                    {
+                        // Save in local resource
+                        var fileName = Guid.NewGuid() + Path.GetExtension(profileImage.FileName);
+                        var fileImagePath = await imageUploadRepository.Upload(profileImage, fileName);
+
+                        // update in database
+                        if (await StudentRepository.UpdateProfileImageURL(studentId, fileImagePath))
+                        {
+                            return Ok(fileImagePath);
+                        }
+                        return StatusCode(StatusCodes.Status500InternalServerError, "Error uploading image.");
+                    }
                 }
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error uploading image.");
+                else
+                {
+                    return BadRequest("This is not a valid image formate.");
+                }
+                return NotFound();
             }
             return NotFound();
         }
