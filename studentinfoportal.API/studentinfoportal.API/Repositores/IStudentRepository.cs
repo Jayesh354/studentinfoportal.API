@@ -19,5 +19,7 @@ namespace studentinfoportal.API.Repositores
 
         public Task<Student> AddNewStudent(Student student);
 
+        public Task<bool> UpdateProfileImageURL(Guid studentId, string profileImageURL);
+
     }
 }
